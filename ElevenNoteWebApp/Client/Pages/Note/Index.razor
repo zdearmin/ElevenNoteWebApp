@@ -1,0 +1,24 @@
+﻿@page "/note"
+@using ElevenNoteWebApp.Shared.Models.Note
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+@inject HttpClient http
+
+<h3>Notes</h3>
+
+<a href="/note/create">Create a note</a>
+
+@if (_notes == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+
+    </table>
+}
+
+@code {
+
+}

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ElevenNoteWebApp.Shared.Models.Note
 {
-    internal class NoteDetail
+    public class NoteDetail
     {
         public int Id { get; set; }
         public string Title { get; set; }

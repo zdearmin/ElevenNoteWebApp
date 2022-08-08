@@ -15,7 +15,7 @@ namespace ElevenNoteWebApp.Server.Models
 
         [Required]
         public string Content { get; set; }
-        public int CategoreyId { get; set; }
+        public int CategoryId { get; set; }
         public virtual Category Category { get; set; }
 
         [Required]

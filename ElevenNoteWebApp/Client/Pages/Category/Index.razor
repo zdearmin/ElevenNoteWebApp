@@ -1,0 +1,39 @@
+﻿@page "/category"
+@using ElevenNoteWebApp.Shared.Models.Category
+@using Microsoft.AspNetCore.Authorization
+@inject HttpClient http
+@attribute [Authorize]
+
+<h3>Categories</h3>
+
+<a href="/category/create">Create a category</a>
+
+@if (categories == null)
+{
+    <p><em>Loading...</em></p>
+}
+
+<table class="table">
+    <thead>
+        <th>Id</th>
+        <th>Name</th>
+    </thead>
+    <tbody>
+        @foreach (CategoryListItem category in categories)
+        {
+            <tr>
+                <td>@category.Id</td>
+                <td>@category.Name</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    private List<CategoryListItem> categories;
+
+    protected override async Task OnInitializedAsync()
+    {
+        categories = await http.GetFromJsonAsync<List<CategoryListItem>>("/api/category");
+    }
+}

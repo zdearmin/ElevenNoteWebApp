@@ -110,12 +110,7 @@ namespace ElevenNoteWebApp.Server.Controllers
                 return Unauthorized();
             }
 
-            if (model == null || !ModelState.IsValid)
-            {
-                return BadRequest();
-            }
-
-            if (model.Id != id)
+            if (model == null || !ModelState.IsValid || model.Id != id)
             {
                 return BadRequest();
             }

@@ -1,5 +1,7 @@
 using ElevenNoteWebApp.Server.Data;
 using ElevenNoteWebApp.Server.Models;
+using ElevenNoteWebApp.Server.Services.Categories;
+using ElevenNoteWebApp.Server.Services.Notes;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
@@ -17,6 +19,9 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.R
 
 builder.Services.AddIdentityServer()
     .AddApiAuthorization<ApplicationUser, ApplicationDbContext>();
+
+builder.Services.AddScoped<INoteService, NoteService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
 
 builder.Services.AddAuthentication()
     .AddIdentityServerJwt();

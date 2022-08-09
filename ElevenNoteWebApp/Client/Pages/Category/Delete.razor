@@ -1,0 +1,60 @@
+﻿@page "/category/delete/{CategoryId:int}"
+@using ElevenNoteWebApp.Shared.Models.Category
+@inject HttpClient http
+@inject NavigationManager navigation
+
+<h3>Delete Category: @Category.Name</h3>
+
+@if (Message != null)
+{
+    <h2 class="text-danger">@Message</h2>
+}
+
+@if (Category != null)
+{
+   <div class="container" >
+       <div class="d-flex justify-content-center mt-3">
+           <div class="text-center justify-content-between w-50">
+               <a href="#" @onclick="HandleClick" class="btn btn-danger text-white">Delete Category!</a>
+           </div>
+       </div>
+       <div class="d-flex justify-content-center mt-3">
+            <a href="/category">Back to Categories Index</a>
+       </div>
+   </div>
+}
+else
+{
+    <p><em>Loading...</em></p>
+}
+
+@code {
+    [Parameter]
+    public int CategoryId { get; set; }
+    public CategoryDetail Category { get; set; }
+    public string Message { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Category = await http.GetFromJsonAsync<CategoryDetail>($"/api/category/{CategoryId}");
+    }
+
+    private async void HandleClick()
+    {
+        // call a Delete request on our API
+        var deleteRes = await http.DeleteAsync($"/api/category/{CategoryId}");
+
+        // check to make sure the call was a success
+        // if successful, navigate back to the Index.razor component
+        if (deleteRes.IsSuccessStatusCode)
+        {
+            navigation.NavigateTo("/category");
+        }
+
+        // if not successful, give the user an error message
+        else
+        {
+            Message = "Failed to delete your category.";
+        }
+    }
+}

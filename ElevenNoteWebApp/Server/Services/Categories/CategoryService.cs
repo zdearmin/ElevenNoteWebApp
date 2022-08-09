@@ -62,7 +62,7 @@ namespace ElevenNoteWebApp.Server.Services.Categories
 
         public async Task<bool> UpdateCategoryAsync(CategoryEdit model)
         {
-            var entity = await _context.Categories.FindAsync(model.Name);
+            var entity = await _context.Categories.FindAsync(model.Id);
 
             if (entity == null)
             {

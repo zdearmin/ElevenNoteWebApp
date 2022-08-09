@@ -8,39 +8,13 @@ namespace ElevenNoteWebApp.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class NotesController : ControllerBase
+    public class NoteController : ControllerBase
     {
         private readonly INoteService _noteService;
 
-        public NotesController(INoteService noteService)
+        public NoteController(INoteService noteService)
         {
             _noteService = noteService;
-        }
-
-        private string GetUserId()
-        {
-            string userIdClaim = User.Claims.First(i => i.Type == ClaimTypes.NameIdentifier).Value;
-
-            if (userIdClaim == null)
-            {
-                return null;
-            }
-
-            return userIdClaim;
-        }
-
-        private bool SetUserIdInService()
-        {
-            var userId = GetUserId();
-
-            if (userId == null)
-            {
-                return false;
-            }
-
-            _noteService.SetUserId(userId);
-            
-            return true;
         }
 
         [HttpGet]
@@ -146,6 +120,31 @@ namespace ElevenNoteWebApp.Server.Controllers
                 return Ok();
             }
             return BadRequest();
+        }
+        private string GetUserId()
+        {
+            string userIdClaim = User.Claims.First(i => i.Type == ClaimTypes.NameIdentifier).Value;
+
+            if (userIdClaim == null)
+            {
+                return null;
+            }
+
+            return userIdClaim;
+        }
+
+        private bool SetUserIdInService()
+        {
+            var userId = GetUserId();
+
+            if (userId == null)
+            {
+                return false;
+            }
+
+            _noteService.SetUserId(userId);
+            
+            return true;
         }
     }
 }

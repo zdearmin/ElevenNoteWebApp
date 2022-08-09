@@ -7,8 +7,8 @@ namespace ElevenNoteWebApp.Server.Services.Notes
 {
     public class NoteService : INoteService
     {
-        private string _userId;
         private readonly ApplicationDbContext _context;
+        private string _userId;
 
         public NoteService(ApplicationDbContext context)
         {

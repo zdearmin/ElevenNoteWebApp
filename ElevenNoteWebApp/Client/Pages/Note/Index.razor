@@ -18,6 +18,8 @@ else
         <thead>
             <tr>
                 <th>Title</th>
+                <th>Category</th>
+                <th>Created</th>
                 <th>&nbsp;</th>
             </tr>
         </thead>
@@ -25,10 +27,12 @@ else
             @foreach (var note in _notes)
             {
                 <tr>
-                    <td><strong>@note.Title</strong></td>
-                    <td>
-                        <a href=@($"note/edit/{note.Id}")>Edit</a>
+                    <td>@note.Title</td>
+                    <td>@note.CategoryName</td>
+                    <td>@note.CreatedUtc</td>
+                    <td class="float-end">
                         <a href=@($"note/{note.Id}")>Details</a>
+                        <a href=@($"note/edit/{note.Id}")>Edit</a>
                         <a href=@($"note/delete/{note.Id}")>Delete</a> 
                     </td>
                 </tr>
@@ -38,10 +42,23 @@ else
 }
 
 @code {
-    private IEnumerable<NoteListItem> _notes;
+    private List<NoteListItem> _notes;
 
     protected override async Task OnInitializedAsync()
     {
-        _notes = await http.GetFromJsonAsync<List<NoteListItem>>("/api/note");
+        HttpResponseMessage response = await http.GetAsync("/api/note");
+        if (response.IsSuccessStatusCode)
+        {
+             string errMsg = await response.Content.ReadAsStringAsync();
+          
+            _notes = await response.Content.ReadFromJsonAsync<List<NoteListItem>>();
+
+        }
+        else
+        {
+            string errMsg = await response.Content.ReadAsStringAsync();
+            Console.WriteLine(errMsg);
+            throw new Exception(errMsg);
+        }
     }
 }

@@ -1,0 +1,60 @@
+﻿@page "/category/edit/{CategoryId:int}"
+@using ElevenNoteWebApp.Shared.Models.Category
+@using ElevenNoteWebApp.Shared.Models.Note
+@inject HttpClient http
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+@inject NavigationManager navigation
+
+<h3>Edit Category: @model.Name</h3>
+
+@if (errorMessage != null)
+{
+    <h5 class="text-danger">@errorMessage</h5>
+}
+else
+{
+    <div class="container">
+        <EditForm Model="@model" OnValidSubmit="@HandleSubmit">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+            <div class="form-group">
+                <label>Name</label>
+                <InputText class="form-control" @bind-Value="model.Name" />
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block mt-5">Submit</button>
+            <a href=@($"/category/delete/{CategoryId}") class="btn btn-outline-danger mt-5 float-end">Delete</a>
+        </EditForm>
+        <div class="d-flex justify-content-center mt-3">
+            <a href="/category">Back to Categories Index</a>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public int CategoryId { get; set; }
+    private CategoryEdit model = new();
+    private string errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        model = await http.GetFromJsonAsync<CategoryEdit>($"/api/category/{CategoryId}");
+    }
+
+    private async void HandleSubmit()
+    {
+        var createRes = await http.PutAsJsonAsync<CategoryEdit>($"/api/category/edit/{CategoryId}", model);
+
+        if (createRes.IsSuccessStatusCode)
+        {
+            navigation.NavigateTo($"/category");
+        }
+        else
+        {
+            errorMessage = "Could not edit your category right now. Please try again later.";
+        }
+    }
+}

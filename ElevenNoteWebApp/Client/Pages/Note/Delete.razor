@@ -1,0 +1,75 @@
+﻿@page "/note/delete/{NoteId:int}"
+@using ElevenNoteWebApp.Shared.Models.Note
+@inject HttpClient http
+@inject NavigationManager navigation
+
+<h3>@Note.Title</h3>
+
+@if (Message != null)
+{
+    <h2 class="text-danger">@Message</h2>
+}
+
+@if (Note != null)
+{
+   <div class="container" >
+       <div class="card">
+           <div class="card-header d-flex justify-content-between">
+               <span class="text-muted"><strong>Category: </strong>@Note.CategoryName</span>
+           </div>
+           <div class="card-body">
+               <p class="card-text">@Note.Content</p>
+           </div>
+           <div class="card-footer text-muted d-flex justify-content-between">
+               <span class="text-left">Created: @Note.CreatedUtc</span>
+               @if (Note.ModifiedUtc != null)
+                {
+                    <span class="text-right">Modified: @Note.ModifiedUtc</span>
+                }
+            </div>
+       </div>
+       <div class="d-flex justify-content-center mt-3">
+           <div class="text-center justify-content-between w-50">
+               <a href="#" @onclick="HandleClick" class="btn btn-danger text-white">Delete Note!</a>
+           </div>
+       </div>
+       <div class="d-flex justify-content-center mt-3">
+            <a href="/note">Back to Notes Index</a>
+       </div>
+   </div>
+}
+else
+{
+    <p><em>Loading...</em></p>
+}
+
+@code {
+    [Parameter]
+    public int NoteId { get; set; }
+    public NoteDetail Note { get; set; }
+    public string Message { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Note = await http.GetFromJsonAsync<NoteDetail>($"/api/note/{NoteId}");
+    }
+
+    private async void HandleClick()
+    {
+        // call a Delete request on our API
+        var deleteRes = await http.DeleteAsync($"/api/note/{NoteId}");
+
+        // check to make sure the call was a success
+        // if successful, navigate back to the Index.razor component
+        if (deleteRes.IsSuccessStatusCode)
+        {
+            navigation.NavigateTo("/note");
+        }
+
+        // if not successful, give the user an error message
+        else
+        {
+            Message = "Failed to delete your note.";
+        }
+    }
+}
